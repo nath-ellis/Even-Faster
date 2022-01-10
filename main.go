@@ -1,13 +1,17 @@
 package main
 
 import (
+	"image/color"
 	_ "image/png"
+	"io/ioutil"
 	"log"
 
-	"github.com/blizzy78/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 var (
@@ -15,11 +19,20 @@ var (
 	Road      *ebiten.Image
 	RoadY     int = 0
 	PlayerCar *ebiten.Image
-	Play *widget.Button
+	Font      font.Face
 )
 
 func init() {
 	Road, _, _ = ebitenutil.NewImageFromFile("assets/road.png")
+
+	b, _ := ioutil.ReadFile("assets/kenney-mini-square.ttf")
+	tt, _ := opentype.Parse(b)
+
+	Font, _ = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    24,
+		DPI:     72,
+		Hinting: font.HintingFull,
+	})
 
 	//PlayerCar, _, _ = ebitenutil.NewImageFromFile("assets/player.png")
 }
@@ -47,6 +60,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	switch State {
 	case "menu":
+		text.Draw(screen, "Click to play", Font, 175, 450, color.White)
 	case "game":
 		drawRoad(screen)
 		op := &ebiten.DrawImageOptions{}
