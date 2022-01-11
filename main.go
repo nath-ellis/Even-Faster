@@ -21,6 +21,9 @@ type Player struct {
 	PlayerCar2 *ebiten.Image
 	PlayerCar  *ebiten.Image
 	MoveCool   int
+	SirenOn    bool
+	SirenStage int
+	SirenCool  int
 }
 
 var (
@@ -55,6 +58,10 @@ func init() {
 
 	player.MoveCool = 0
 
+	player.SirenOn = true
+	player.SirenStage = 1
+	player.SirenCool = 0
+
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
 }
@@ -86,10 +93,21 @@ func updateRoad() {
 func drawPlayer(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(player.Obj.X, player.Obj.Y)
-	screen.DrawImage(player.PlayerCar, op)
+
+	if player.SirenOn {
+		if player.SirenStage <= 16 {
+			op.GeoM.Translate(-6, 0)
+			screen.DrawImage(player.PlayerCar1, op)
+		} else if player.SirenStage > 16 {
+			op.GeoM.Translate(-22, 0)
+			screen.DrawImage(player.PlayerCar2, op)
+		}
+	} else {
+		screen.DrawImage(player.PlayerCar, op)
+	}
 }
 
-func movePlayer() {
+func move() {
 	// Using ebiten instead of input util because movement is better
 	if (ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)) && player.MoveCool <= 0 && player.Obj.X < 317 {
 		player.Obj.X += 54
@@ -100,9 +118,31 @@ func movePlayer() {
 		player.Obj.X -= 54
 		player.MoveCool += 15
 	}
+}
+
+func playerUpdate() {
+	if ebiten.IsKeyPressed(ebiten.KeyS) && player.SirenCool <= 0 {
+		if player.SirenOn {
+			player.SirenOn = false
+		} else {
+			player.SirenOn = true
+		}
+
+		player.SirenCool += 10
+	}
 
 	if player.MoveCool > 0 {
 		player.MoveCool -= 1
+	}
+
+	if player.SirenCool > 0 {
+		player.SirenCool -= 1
+	}
+
+	if player.SirenStage > 32 {
+		player.SirenStage = 1
+	} else {
+		player.SirenStage += 1
 	}
 }
 
@@ -117,7 +157,9 @@ func (g *Game) Update() error {
 	case "game":
 		updateRoad()
 
-		movePlayer()
+		move()
+
+		playerUpdate()
 	}
 
 	return nil
