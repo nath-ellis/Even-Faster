@@ -20,6 +20,7 @@ type Player struct {
 	PlayerCar1 *ebiten.Image
 	PlayerCar2 *ebiten.Image
 	PlayerCar  *ebiten.Image
+	MoveCool   int
 }
 
 var (
@@ -51,6 +52,8 @@ func init() {
 	player.PlayerCar1, _, _ = ebitenutil.NewImageFromFile("assets/police1.png")
 	player.PlayerCar2, _, _ = ebitenutil.NewImageFromFile("assets/police2.png")
 	player.PlayerCar, _, _ = ebitenutil.NewImageFromFile("assets/police.png")
+
+	player.MoveCool = 0
 
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
@@ -86,6 +89,23 @@ func drawPlayer(screen *ebiten.Image) {
 	screen.DrawImage(player.PlayerCar, op)
 }
 
+func movePlayer() {
+	// Using ebiten instead of input util because movement is better
+	if (ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)) && player.MoveCool <= 0 && player.Obj.X < 317 {
+		player.Obj.X += 54
+		player.MoveCool += 15
+	}
+
+	if (ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA)) && player.MoveCool <= 0 && player.Obj.X > 155 {
+		player.Obj.X -= 54
+		player.MoveCool += 15
+	}
+
+	if player.MoveCool > 0 {
+		player.MoveCool -= 1
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -96,6 +116,8 @@ func (g *Game) Update() error {
 		}
 	case "game":
 		updateRoad()
+
+		movePlayer()
 	}
 
 	return nil
