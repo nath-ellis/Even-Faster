@@ -10,17 +10,26 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/solarlune/resolv"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
 
+type Player struct {
+	Obj        *resolv.Object
+	PlayerCar1 *ebiten.Image
+	PlayerCar2 *ebiten.Image
+	PlayerCar  *ebiten.Image
+}
+
 var (
-	State     string = "menu"
-	Road      *ebiten.Image
-	RoadY1    int = 0
-	RoadY2    int = 0
-	PlayerCar *ebiten.Image
-	Font      font.Face
+	State  string = "menu"
+	Road   *ebiten.Image
+	RoadY1 int = 0
+	RoadY2 int = 0
+	Font   font.Face
+	Space  *resolv.Space
+	player Player
 )
 
 func init() {
@@ -35,7 +44,13 @@ func init() {
 		Hinting: font.HintingFull,
 	})
 
-	//PlayerCar, _, _ = ebitenutil.NewImageFromFile("assets/player.png")
+	Space = resolv.NewSpace(500, 600, 38, 67)
+
+	player.Obj = resolv.NewObject(155, 400, 38, 67)
+
+	player.PlayerCar1, _, _ = ebitenutil.NewImageFromFile("assets/police1.png")
+	player.PlayerCar2, _, _ = ebitenutil.NewImageFromFile("assets/police2.png")
+	player.PlayerCar, _, _ = ebitenutil.NewImageFromFile("assets/police.png")
 
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
@@ -65,6 +80,12 @@ func updateRoad() {
 	}
 }
 
+func drawPlayer(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(player.Obj.X, player.Obj.Y)
+	screen.DrawImage(player.PlayerCar, op)
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -86,9 +107,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "Click to play", Font, 175, 450, color.White)
 	case "game":
 		drawRoad(screen)
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(50, 135)
-		//screen.DrawImage(PlayerCar, op)
+
+		drawPlayer(screen)
 	}
 }
 
