@@ -17,7 +17,8 @@ import (
 var (
 	State     string = "menu"
 	Road      *ebiten.Image
-	RoadY     int = 0
+	RoadY1    int = 0
+	RoadY2    int = 0
 	PlayerCar *ebiten.Image
 	Font      font.Face
 )
@@ -35,12 +36,33 @@ func init() {
 	})
 
 	//PlayerCar, _, _ = ebitenutil.NewImageFromFile("assets/player.png")
+
+	_, RoadY2 = Road.Size()
+	RoadY2 = RoadY2 * -1
 }
 
 func drawRoad(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(120, float64(RoadY))
+	op.GeoM.Translate(120, float64(RoadY1))
 	screen.DrawImage(Road, op)
+
+	op.GeoM.Reset()
+	op.GeoM.Translate(120, float64(RoadY2))
+	screen.DrawImage(Road, op)
+}
+
+func updateRoad() {
+	RoadY1 += 1
+	RoadY2 += 1
+
+	_, roadheight := Road.Size()
+
+	if RoadY1 >= 600 {
+		RoadY1 = -roadheight
+	}
+	if RoadY2 >= 600 {
+		RoadY2 = -roadheight
+	}
 }
 
 type Game struct{}
@@ -52,6 +74,7 @@ func (g *Game) Update() error {
 			State = "game"
 		}
 	case "game":
+		updateRoad()
 	}
 
 	return nil
