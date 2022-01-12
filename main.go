@@ -5,6 +5,8 @@ import (
 	_ "image/png"
 	"io/ioutil"
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -25,14 +27,24 @@ type Player struct {
 	SirenCool  int
 }
 
+type Enemy struct {
+	Obj  *resolv.Object
+	Type string
+}
+
 var (
-	State  string = "menu"
-	Road   *ebiten.Image
-	RoadY1 int = 0
-	RoadY2 int = 0
-	Font   font.Face
-	Space  *resolv.Space
-	player Player
+	State     string = "menu"
+	Road      *ebiten.Image
+	RoadY1    int = 0
+	RoadY2    int = 0
+	Font      font.Face
+	Space     *resolv.Space
+	player    Player
+	EnemyCar1 *ebiten.Image
+	EnemyCar2 *ebiten.Image
+	EnemyCar3 *ebiten.Image
+	EnemyCar4 *ebiten.Image
+	Enemies   []Enemy
 )
 
 func init() {
@@ -64,6 +76,13 @@ func init() {
 	player.SirenOn = true
 	player.SirenStage = 1
 	player.SirenCool = 0
+
+	EnemyCar1, _, _ = ebitenutil.NewImageFromFile("assets/enemy1.png")
+	EnemyCar2, _, _ = ebitenutil.NewImageFromFile("assets/enemy2.png")
+	EnemyCar3, _, _ = ebitenutil.NewImageFromFile("assets/enemy3.png")
+	EnemyCar4, _, _ = ebitenutil.NewImageFromFile("assets/enemy4.png")
+
+	rand.Seed(time.Now().Unix())
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -134,7 +153,7 @@ func move() {
 	player.Obj.Update()
 }
 
-func playerUpdate() {
+func updatePlayer() {
 	if ebiten.IsKeyPressed(ebiten.KeyZ) && player.SirenCool <= 0 {
 		if player.SirenOn {
 			player.SirenOn = false
@@ -160,6 +179,40 @@ func playerUpdate() {
 	}
 }
 
+func newEnemy() {
+	lane := rand.Intn(4)
+
+	var x int
+
+	if lane == 0 {
+		x = 155
+	} else if lane == 1 {
+		x = 209
+	} else if lane == 2 {
+		x = 263
+	} else {
+		x = 317
+	}
+
+	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 38, 67, "enemy"), "default-green"})
+}
+
+func moveEnemies() {
+	for _, e := range Enemies {
+		e.Obj.Y += 2
+		e.Obj.Update()
+	}
+}
+
+func drawEnemies(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	for _, e := range Enemies {
+		op.GeoM.Translate(e.Obj.X, e.Obj.Y)
+		screen.DrawImage(EnemyCar1, op)
+		op.GeoM.Reset()
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -172,8 +225,8 @@ func (g *Game) Update() error {
 		updateRoad()
 
 		move()
-
-		playerUpdate()
+		updatePlayer()
+	case "gameOver":
 	}
 
 	return nil
@@ -187,6 +240,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawRoad(screen)
 
 		drawPlayer(screen)
+	case "gameOver":
 	}
 }
 

@@ -27,3 +27,8 @@ Title: Rumble/Explosion
 Author: Michel Baradari
 URL: https://opengameart.org/content/rumbleexplosion
 License: http://creativecommons.org/licenses/by/3.0/ 
+
+Title: Chunky Pixel Art Car Assets
+Author: Games in Bits
+URL: https://games-in-bits.itch.io/chunky-pixel-art-car-assets
+License: 
