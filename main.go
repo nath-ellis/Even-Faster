@@ -45,6 +45,7 @@ var (
 	Enemies    []Enemy
 	Ticks      int = 0
 	EnemyTimer int = 0
+	BG         *ebiten.Image
 )
 
 func init() {
@@ -83,6 +84,8 @@ func init() {
 	EnemyCar4, _, _ = ebitenutil.NewImageFromFile("assets/enemy4.png")
 
 	rand.Seed(time.Now().Unix())
+
+	BG, _, _ = ebitenutil.NewImageFromFile("assets/bg.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -245,7 +248,6 @@ func (g *Game) Update() error {
 		}
 	case "game":
 		Ticks += 1
-
 		EnemyTimer += 1
 
 		updateRoad()
@@ -280,6 +282,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	screen.DrawImage(BG, nil)
 	switch State {
 	case "menu":
 		drawRoad(screen)
