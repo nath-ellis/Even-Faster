@@ -132,12 +132,12 @@ func move() {
 	// Using ebiten instead of inpututil because movement is better
 	if (ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)) && player.MoveCool <= 0 && player.Obj.X < 317 {
 		player.Obj.X += 54
-		player.MoveCool += 15
+		player.MoveCool += 20
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA)) && player.MoveCool <= 0 && player.Obj.X > 155 {
 		player.Obj.X -= 54
-		player.MoveCool += 15
+		player.MoveCool += 20
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW)) && player.Obj.Y > 0 {
@@ -196,7 +196,20 @@ func newEnemy() {
 		x = 317
 	}
 
-	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 38, 67, "enemy"), "default-green"})
+	ran := rand.Intn(3)
+	var typ string
+
+	if ran == 0 {
+		typ = "default-green"
+	} else if ran == 1 {
+		typ = "default-black"
+	} else if ran == 2 {
+		typ = "default-purple"
+	} else if ran == 3 {
+		typ = "default-white"
+	}
+
+	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 38, 67, "enemy"), typ})
 }
 
 func moveEnemies() {
@@ -211,7 +224,16 @@ func drawEnemies(screen *ebiten.Image) {
 	for _, e := range Enemies {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(e.Obj.X, e.Obj.Y)
-		screen.DrawImage(EnemyCar1, op)
+
+		if e.Type == "default-green" {
+			screen.DrawImage(EnemyCar1, op)
+		} else if e.Type == "default-black" {
+			screen.DrawImage(EnemyCar2, op)
+		} else if e.Type == "default-purple" {
+			screen.DrawImage(EnemyCar3, op)
+		} else if e.Type == "default-white" {
+			screen.DrawImage(EnemyCar4, op)
+		}
 	}
 }
 
