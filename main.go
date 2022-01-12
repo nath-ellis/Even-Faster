@@ -64,9 +64,9 @@ func init() {
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
 
-	Space = resolv.NewSpace(500, 600, 20, 20)
+	Space = resolv.NewSpace(500, 600, 5, 5)
 
-	player.Obj = resolv.NewObject(155, 400, 38, 67, "player")
+	player.Obj = resolv.NewObject(155, 400, 40, 70, "player")
 	Space.Add(player.Obj)
 
 	player.PlayerCar1, _, _ = ebitenutil.NewImageFromFile("assets/police1.png")
@@ -209,7 +209,7 @@ func newEnemy() {
 		typ = "default-white"
 	}
 
-	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 38, 67, "enemy"), typ})
+	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 40, 70, "enemy"), typ})
 }
 
 func moveEnemies() {
@@ -280,6 +280,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		drawEnemies(screen)
 	case "gameOver":
+		drawRoad(screen)
+
+		drawPlayer(screen)
+
+		drawEnemies(screen)
 	}
 }
 
