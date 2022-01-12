@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image/color"
 	_ "image/png"
 	"io/ioutil"
 	"log"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/solarlune/resolv"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -196,7 +194,7 @@ func newEnemy() {
 		x = 317
 	}
 
-	ran := rand.Intn(3)
+	ran := rand.Intn(4)
 	var typ string
 
 	if ran == 0 {
@@ -264,6 +262,18 @@ func (g *Game) Update() error {
 	case "gameOver":
 		Ticks = 0
 		EnemyTimer = 0
+
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+			objs := Space.Objects()
+			for _, o := range objs {
+				if o.HasTags("enemy") {
+					Space.Remove(o)
+				}
+			}
+			Enemies = make([]Enemy, 0)
+
+			State = "game"
+		}
 	}
 
 	return nil
@@ -272,19 +282,19 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	switch State {
 	case "menu":
-		text.Draw(screen, "Click to play", Font, 175, 450, color.White)
+		drawRoad(screen)
 	case "game":
 		drawRoad(screen)
 
-		drawPlayer(screen)
-
 		drawEnemies(screen)
+
+		drawPlayer(screen)
 	case "gameOver":
 		drawRoad(screen)
 
-		drawPlayer(screen)
-
 		drawEnemies(screen)
+
+		drawPlayer(screen)
 	}
 }
 
