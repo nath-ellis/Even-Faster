@@ -64,7 +64,7 @@ func init() {
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
 
-	Space = resolv.NewSpace(500, 600, 38, 67)
+	Space = resolv.NewSpace(500, 600, 20, 20)
 
 	player.Obj = resolv.NewObject(155, 400, 38, 67, "player")
 	Space.Add(player.Obj)
@@ -148,7 +148,7 @@ func move() {
 		player.Obj.Y += 1
 	}
 
-	if c := player.Obj.Check(0, 0); c != nil {
+	if c := player.Obj.Check(0, 0, "enemy"); c != nil {
 		State = "gameOver"
 	}
 
@@ -201,17 +201,17 @@ func newEnemy() {
 
 func moveEnemies() {
 	for _, e := range Enemies {
+		Space.Add(e.Obj)
 		e.Obj.Y += 2
 		e.Obj.Update()
 	}
 }
 
 func drawEnemies(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
 	for _, e := range Enemies {
+		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(e.Obj.X, e.Obj.Y)
 		screen.DrawImage(EnemyCar1, op)
-		op.GeoM.Reset()
 	}
 }
 
@@ -241,6 +241,7 @@ func (g *Game) Update() error {
 		moveEnemies()
 	case "gameOver":
 		Ticks = 0
+		EnemyTimer = 0
 	}
 
 	return nil
