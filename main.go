@@ -33,18 +33,20 @@ type Enemy struct {
 }
 
 var (
-	State     string = "menu"
-	Road      *ebiten.Image
-	RoadY1    int = 0
-	RoadY2    int = 0
-	Font      font.Face
-	Space     *resolv.Space
-	player    Player
-	EnemyCar1 *ebiten.Image
-	EnemyCar2 *ebiten.Image
-	EnemyCar3 *ebiten.Image
-	EnemyCar4 *ebiten.Image
-	Enemies   []Enemy
+	State      string = "menu"
+	Road       *ebiten.Image
+	RoadY1     int = 0
+	RoadY2     int = 0
+	Font       font.Face
+	Space      *resolv.Space
+	player     Player
+	EnemyCar1  *ebiten.Image
+	EnemyCar2  *ebiten.Image
+	EnemyCar3  *ebiten.Image
+	EnemyCar4  *ebiten.Image
+	Enemies    []Enemy
+	Ticks      int = 0
+	EnemyTimer int = 0
 )
 
 func init() {
@@ -222,11 +224,23 @@ func (g *Game) Update() error {
 			State = "game"
 		}
 	case "game":
+		Ticks += 1
+
+		EnemyTimer += 1
+
 		updateRoad()
 
 		move()
 		updatePlayer()
+
+		if (EnemyTimer / 60) == 3 {
+			newEnemy()
+			EnemyTimer = 0
+		}
+
+		moveEnemies()
 	case "gameOver":
+		Ticks = 0
 	}
 
 	return nil
@@ -240,6 +254,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawRoad(screen)
 
 		drawPlayer(screen)
+
+		drawEnemies(screen)
 	case "gameOver":
 	}
 }
