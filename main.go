@@ -8,7 +8,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/solarlune/resolv"
 	"golang.org/x/image/font"
@@ -48,9 +47,13 @@ func init() {
 		Hinting: font.HintingFull,
 	})
 
+	_, RoadY2 = Road.Size()
+	RoadY2 = RoadY2 * -1
+
 	Space = resolv.NewSpace(500, 600, 38, 67)
 
-	player.Obj = resolv.NewObject(155, 400, 38, 67)
+	player.Obj = resolv.NewObject(155, 400, 38, 67, "player")
+	Space.Add(player.Obj)
 
 	player.PlayerCar1, _, _ = ebitenutil.NewImageFromFile("assets/police1.png")
 	player.PlayerCar2, _, _ = ebitenutil.NewImageFromFile("assets/police2.png")
@@ -61,9 +64,6 @@ func init() {
 	player.SirenOn = true
 	player.SirenStage = 1
 	player.SirenCool = 0
-
-	_, RoadY2 = Road.Size()
-	RoadY2 = RoadY2 * -1
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -108,7 +108,7 @@ func drawPlayer(screen *ebiten.Image) {
 }
 
 func move() {
-	// Using ebiten instead of input util because movement is better
+	// Using ebiten instead of inpututil because movement is better
 	if (ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)) && player.MoveCool <= 0 && player.Obj.X < 317 {
 		player.Obj.X += 54
 		player.MoveCool += 15
@@ -118,10 +118,24 @@ func move() {
 		player.Obj.X -= 54
 		player.MoveCool += 15
 	}
+
+	if (ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW)) && player.Obj.Y > 0 {
+		player.Obj.Y -= 1
+	}
+
+	if (ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS)) && player.Obj.Y < 533 {
+		player.Obj.Y += 1
+	}
+
+	if c := player.Obj.Check(0, 0); c != nil {
+		State = "gameOver"
+	}
+
+	player.Obj.Update()
 }
 
 func playerUpdate() {
-	if ebiten.IsKeyPressed(ebiten.KeyS) && player.SirenCool <= 0 {
+	if ebiten.IsKeyPressed(ebiten.KeyZ) && player.SirenCool <= 0 {
 		if player.SirenOn {
 			player.SirenOn = false
 		} else {
@@ -151,7 +165,7 @@ type Game struct{}
 func (g *Game) Update() error {
 	switch State {
 	case "menu":
-		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			State = "game"
 		}
 	case "game":
