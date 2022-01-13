@@ -46,6 +46,7 @@ var (
 	Ticks      int = 0
 	EnemyTimer int = 0
 	BG         *ebiten.Image
+	Explosion  []*ebiten.Image
 )
 
 func init() {
@@ -86,6 +87,32 @@ func init() {
 	rand.Seed(time.Now().Unix())
 
 	BG, _, _ = ebitenutil.NewImageFromFile("assets/bg.png")
+
+	explosion1, _, _ := ebitenutil.NewImageFromFile("assets/explosion1.png")
+	explosion2, _, _ := ebitenutil.NewImageFromFile("assets/explosion2.png")
+	explosion3, _, _ := ebitenutil.NewImageFromFile("assets/explosion3.png")
+	explosion4, _, _ := ebitenutil.NewImageFromFile("assets/explosion4.png")
+	explosion5, _, _ := ebitenutil.NewImageFromFile("assets/explosion5.png")
+	explosion6, _, _ := ebitenutil.NewImageFromFile("assets/explosion6.png")
+	explosion7, _, _ := ebitenutil.NewImageFromFile("assets/explosion7.png")
+	explosion8, _, _ := ebitenutil.NewImageFromFile("assets/explosion8.png")
+	explosion9, _, _ := ebitenutil.NewImageFromFile("assets/explosion9.png")
+	explosion10, _, _ := ebitenutil.NewImageFromFile("assets/explosion10.png")
+	explosion11, _, _ := ebitenutil.NewImageFromFile("assets/explosion11.png")
+	explosion12, _, _ := ebitenutil.NewImageFromFile("assets/explosion12.png")
+
+	Explosion = append(Explosion, explosion1)
+	Explosion = append(Explosion, explosion2)
+	Explosion = append(Explosion, explosion3)
+	Explosion = append(Explosion, explosion4)
+	Explosion = append(Explosion, explosion5)
+	Explosion = append(Explosion, explosion6)
+	Explosion = append(Explosion, explosion7)
+	Explosion = append(Explosion, explosion8)
+	Explosion = append(Explosion, explosion9)
+	Explosion = append(Explosion, explosion10)
+	Explosion = append(Explosion, explosion11)
+	Explosion = append(Explosion, explosion12)
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -238,6 +265,15 @@ func drawEnemies(screen *ebiten.Image) {
 	}
 }
 
+func explosion(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(player.Obj.X, player.Obj.Y)
+
+	for _, ex := range Explosion {
+		screen.DrawImage(ex, op)
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -283,6 +319,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(BG, nil)
+
 	switch State {
 	case "menu":
 		drawRoad(screen)
