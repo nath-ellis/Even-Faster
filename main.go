@@ -104,16 +104,28 @@ func init() {
 	explosion12, _, _ := ebitenutil.NewImageFromFile("assets/explosion12.png")
 
 	Explosion = append(Explosion, explosion1)
+	Explosion = append(Explosion, explosion1)
+	Explosion = append(Explosion, explosion2)
 	Explosion = append(Explosion, explosion2)
 	Explosion = append(Explosion, explosion3)
+	Explosion = append(Explosion, explosion3)
+	Explosion = append(Explosion, explosion4)
 	Explosion = append(Explosion, explosion4)
 	Explosion = append(Explosion, explosion5)
+	Explosion = append(Explosion, explosion5)
+	Explosion = append(Explosion, explosion6)
 	Explosion = append(Explosion, explosion6)
 	Explosion = append(Explosion, explosion7)
+	Explosion = append(Explosion, explosion7)
+	Explosion = append(Explosion, explosion8)
 	Explosion = append(Explosion, explosion8)
 	Explosion = append(Explosion, explosion9)
+	Explosion = append(Explosion, explosion9)
+	Explosion = append(Explosion, explosion10)
 	Explosion = append(Explosion, explosion10)
 	Explosion = append(Explosion, explosion11)
+	Explosion = append(Explosion, explosion11)
+	Explosion = append(Explosion, explosion12)
 	Explosion = append(Explosion, explosion12)
 }
 
@@ -333,8 +345,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	if Exploding {
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(player.Obj.X-20, player.Obj.Y-18)
-		if ETicker < 13 {
+		op.GeoM.Translate(player.Obj.X-26, player.Obj.Y-15)
+		if ETicker < 24 {
 			screen.DrawImage(Explosion[ETicker], op)
 			ETicker++
 		} else {
