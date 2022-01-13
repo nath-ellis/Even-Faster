@@ -47,6 +47,8 @@ var (
 	EnemyTimer int = 0
 	BG         *ebiten.Image
 	Explosion  []*ebiten.Image
+	Exploding  bool = false
+	ETicker    int  = 0
 )
 
 func init() {
@@ -177,6 +179,7 @@ func move() {
 	}
 
 	if c := player.Obj.Check(0, 0, "enemy"); c != nil {
+		Exploding = true
 		State = "gameOver"
 	}
 
@@ -265,15 +268,6 @@ func drawEnemies(screen *ebiten.Image) {
 	}
 }
 
-func explosion(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(player.Obj.X, player.Obj.Y)
-
-	for _, ex := range Explosion {
-		screen.DrawImage(ex, op)
-	}
-}
-
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -335,6 +329,18 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawEnemies(screen)
 
 		drawPlayer(screen)
+	}
+
+	if Exploding {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(player.Obj.X-20, player.Obj.Y-18)
+		if ETicker < 13 {
+			screen.DrawImage(Explosion[ETicker], op)
+			ETicker++
+		} else {
+			ETicker = 0
+			Exploding = false
+		}
 	}
 }
 
