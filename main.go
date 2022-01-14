@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/solarlune/resolv"
 	"golang.org/x/image/font"
@@ -31,24 +33,27 @@ type Enemy struct {
 }
 
 var (
-	State      string = "menu"
-	Road       *ebiten.Image
-	RoadY1     int = 0
-	RoadY2     int = 0
-	Font       font.Face
-	Space      *resolv.Space
-	player     Player
-	EnemyCar1  *ebiten.Image
-	EnemyCar2  *ebiten.Image
-	EnemyCar3  *ebiten.Image
-	EnemyCar4  *ebiten.Image
-	Enemies    []Enemy
-	Ticks      int = 0
-	EnemyTimer int = 0
-	BG         *ebiten.Image
-	Explosion  []*ebiten.Image
-	Exploding  bool = false
-	ETicker    int  = 0
+	State        string = "menu"
+	Road         *ebiten.Image
+	RoadY1       int = 0
+	RoadY2       int = 0
+	Font         font.Face
+	Space        *resolv.Space
+	player       Player
+	EnemyCar1    *ebiten.Image
+	EnemyCar2    *ebiten.Image
+	EnemyCar3    *ebiten.Image
+	EnemyCar4    *ebiten.Image
+	Enemies      []Enemy
+	Ticks        int = 0
+	EnemyTimer   int = 0
+	BG           *ebiten.Image
+	Explosion    []*ebiten.Image
+	Exploding    bool = false
+	ETicker      int  = 0
+	AudioContext *audio.Context
+	AudioPlayer  *audio.Player
+	Played       bool = false
 )
 
 func init() {
@@ -127,6 +132,11 @@ func init() {
 	Explosion = append(Explosion, explosion11)
 	Explosion = append(Explosion, explosion12)
 	Explosion = append(Explosion, explosion12)
+
+	AudioContext = audio.NewContext(48000)
+	f, _ := ebitenutil.OpenFile("assets/explosion.mp3")
+	d, _ := mp3.DecodeWithSampleRate(48000, f)
+	AudioPlayer, _ = AudioContext.NewPlayer(d)
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -191,6 +201,9 @@ func move() {
 	}
 
 	if c := player.Obj.Check(0, 0, "enemy"); c != nil {
+		AudioPlayer.Rewind()
+		AudioPlayer.Play()
+
 		Exploding = true
 		State = "gameOver"
 	}
