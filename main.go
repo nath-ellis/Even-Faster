@@ -33,27 +33,25 @@ type Enemy struct {
 }
 
 var (
-	State        string = "menu"
-	Road         *ebiten.Image
-	RoadY1       int = 0
-	RoadY2       int = 0
-	Font         font.Face
-	Space        *resolv.Space
-	player       Player
-	EnemyCar1    *ebiten.Image
-	EnemyCar2    *ebiten.Image
-	EnemyCar3    *ebiten.Image
-	EnemyCar4    *ebiten.Image
-	Enemies      []Enemy
-	Ticks        int = 0
-	EnemyTimer   int = 0
-	BG           *ebiten.Image
-	Explosion    []*ebiten.Image
-	Exploding    bool = false
-	ETicker      int  = 0
-	AudioContext *audio.Context
-	AudioPlayer  *audio.Player
-	Played       bool = false
+	State       string = "menu"
+	Road        *ebiten.Image
+	RoadY1      int = 0
+	RoadY2      int = 0
+	Font        font.Face
+	Space       *resolv.Space
+	player      Player
+	EnemyCar1   *ebiten.Image
+	EnemyCar2   *ebiten.Image
+	EnemyCar3   *ebiten.Image
+	EnemyCar4   *ebiten.Image
+	Enemies     []Enemy
+	Ticks       int = 0
+	EnemyTimer  int = 0
+	BG          *ebiten.Image
+	Explosion   []*ebiten.Image
+	Exploding   bool = false
+	ETicker     int  = 0
+	AudioPlayer *audio.Player
 )
 
 func init() {
@@ -133,10 +131,10 @@ func init() {
 	Explosion = append(Explosion, explosion12)
 	Explosion = append(Explosion, explosion12)
 
-	AudioContext = audio.NewContext(48000)
+	ctx := audio.NewContext(48000)
 	f, _ := ebitenutil.OpenFile("assets/explosion.mp3")
 	d, _ := mp3.DecodeWithSampleRate(48000, f)
-	AudioPlayer, _ = AudioContext.NewPlayer(d)
+	AudioPlayer, _ = ctx.NewPlayer(d)
 }
 
 func drawRoad(screen *ebiten.Image) {
