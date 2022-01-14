@@ -13,9 +13,9 @@ Author: TokyoGeisha
 URL: https://opengameart.org/content/pixel-hearts
 License: http://creativecommons.org/publicdomain/zero/1.0/
 
-Title: Kenney Fonts
-Author: Kenney
-URL: https://opengameart.org/content/kenney-fonts
+Title: Boxy Bold - TrueType Font
+Author: William.Thompsonj 
+URL: https://opengameart.org/content/boxy-bold-truetype-font
 License: http://creativecommons.org/publicdomain/zero/1.0/
 
 Title: Pixel Explosion (12 Frames)

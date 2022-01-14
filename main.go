@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	_ "image/png"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"time"
@@ -12,8 +12,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/solarlune/resolv"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
 )
 
 type Player struct {
@@ -37,7 +35,6 @@ var (
 	Road        *ebiten.Image
 	RoadY1      int = 0
 	RoadY2      int = 0
-	Font        font.Face
 	Space       *resolv.Space
 	player      Player
 	EnemyCar1   *ebiten.Image
@@ -54,19 +51,21 @@ var (
 	AudioPlayer *audio.Player
 	Lives       int = 3
 	LifeImg     *ebiten.Image
+	Score       int = 0
+	Zero        *ebiten.Image
+	One         *ebiten.Image
+	Two         *ebiten.Image
+	Three       *ebiten.Image
+	Four        *ebiten.Image
+	Five        *ebiten.Image
+	Six         *ebiten.Image
+	Seven       *ebiten.Image
+	Eight       *ebiten.Image
+	Nine        *ebiten.Image
 )
 
 func init() {
 	Road, _, _ = ebitenutil.NewImageFromFile("assets/road.png")
-
-	b, _ := ioutil.ReadFile("assets/kenney-mini-square.ttf")
-	tt, _ := opentype.Parse(b)
-
-	Font, _ = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    24,
-		DPI:     72,
-		Hinting: font.HintingFull,
-	})
 
 	_, RoadY2 = Road.Size()
 	RoadY2 = RoadY2 * -1
@@ -139,6 +138,17 @@ func init() {
 	AudioPlayer, _ = ctx.NewPlayer(d)
 
 	LifeImg, _, _ = ebitenutil.NewImageFromFile("assets/lives.png")
+
+	Zero, _, _ = ebitenutil.NewImageFromFile("assets/letters/0.png")
+	One, _, _ = ebitenutil.NewImageFromFile("assets/letters/1.png")
+	Two, _, _ = ebitenutil.NewImageFromFile("assets/letters/2.png")
+	Three, _, _ = ebitenutil.NewImageFromFile("assets/letters/3.png")
+	Four, _, _ = ebitenutil.NewImageFromFile("assets/letters/4.png")
+	Five, _, _ = ebitenutil.NewImageFromFile("assets/letters/5.png")
+	Six, _, _ = ebitenutil.NewImageFromFile("assets/letters/6.png")
+	Seven, _, _ = ebitenutil.NewImageFromFile("assets/letters/7.png")
+	Eight, _, _ = ebitenutil.NewImageFromFile("assets/letters/8.png")
+	Nine, _, _ = ebitenutil.NewImageFromFile("assets/letters/9.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -320,6 +330,8 @@ func (g *Game) Update() error {
 		Ticks += 1
 		EnemyTimer += 1
 
+		Score += 1
+
 		updateRoad()
 
 		move()
@@ -381,6 +393,40 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawEnemies(screen)
 
 		drawPlayer(screen)
+
+		for i, s := range fmt.Sprint(Score) {
+			if i >= len(fmt.Sprint(Score))-1 {
+				break
+			}
+
+			op := &ebiten.DrawImageOptions{}
+
+			op.GeoM.Scale(0.5, 0.5)
+			op.GeoM.Translate(float64((25*i)+5), 5)
+
+			switch string(s) {
+			case "0":
+				screen.DrawImage(Zero, op)
+			case "1":
+				screen.DrawImage(One, op)
+			case "2":
+				screen.DrawImage(Two, op)
+			case "3":
+				screen.DrawImage(Three, op)
+			case "4":
+				screen.DrawImage(Four, op)
+			case "5":
+				screen.DrawImage(Five, op)
+			case "6":
+				screen.DrawImage(Six, op)
+			case "7":
+				screen.DrawImage(Seven, op)
+			case "8":
+				screen.DrawImage(Eight, op)
+			case "9":
+				screen.DrawImage(Nine, op)
+			}
+		}
 	case "gameOver":
 		drawRoad(screen)
 
