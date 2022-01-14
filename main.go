@@ -52,6 +52,8 @@ var (
 	Exploding   bool = false
 	ETicker     int  = 0
 	AudioPlayer *audio.Player
+	Lives       int = 3
+	LifeImg     *ebiten.Image
 )
 
 func init() {
@@ -135,6 +137,8 @@ func init() {
 	f, _ := ebitenutil.OpenFile("assets/explosion.mp3")
 	d, _ := mp3.DecodeWithSampleRate(48000, f)
 	AudioPlayer, _ = ctx.NewPlayer(d)
+
+	LifeImg, _, _ = ebitenutil.NewImageFromFile("assets/lives.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -203,7 +207,16 @@ func move() {
 		AudioPlayer.Play()
 
 		Exploding = true
-		State = "gameOver"
+
+		objs := Space.Objects()
+		for _, o := range objs {
+			if o.HasTags("enemy") {
+				Space.Remove(o)
+			}
+		}
+		Enemies = make([]Enemy, 0)
+
+		Lives -= 1
 	}
 
 	player.Obj.Update()
@@ -300,6 +313,10 @@ func (g *Game) Update() error {
 			State = "game"
 		}
 	case "game":
+		if Lives <= 0 {
+			State = "gameOver"
+		}
+
 		Ticks += 1
 		EnemyTimer += 1
 
@@ -327,6 +344,8 @@ func (g *Game) Update() error {
 			}
 			Enemies = make([]Enemy, 0)
 
+			Lives = 3
+
 			State = "game"
 		}
 	}
@@ -341,6 +360,22 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	case "menu":
 		drawRoad(screen)
 	case "game":
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(5, 43)
+		if Lives == 3 {
+			screen.DrawImage(LifeImg, op)
+			op.GeoM.Translate(0, 41)
+			screen.DrawImage(LifeImg, op)
+			op.GeoM.Translate(0, 41)
+			screen.DrawImage(LifeImg, op)
+		} else if Lives == 2 {
+			screen.DrawImage(LifeImg, op)
+			op.GeoM.Translate(0, 41)
+			screen.DrawImage(LifeImg, op)
+		} else if Lives == 1 {
+			screen.DrawImage(LifeImg, op)
+		}
+
 		drawRoad(screen)
 
 		drawEnemies(screen)
