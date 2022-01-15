@@ -151,6 +151,10 @@ func init() {
 	Nine, _, _ = ebitenutil.NewImageFromFile("assets/letters/9.png")
 }
 
+func removeEnemy(slice []Enemy, s int) []Enemy {
+	return append(slice[:s], slice[s+1:]...)
+}
+
 func drawRoad(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(120, float64(RoadY1))
@@ -218,13 +222,19 @@ func move() {
 
 		Exploding = true
 
+		pos := c.Objects[0]
 		objs := Space.Objects()
 		for _, o := range objs {
-			if o.HasTags("enemy") {
+			if pos.X == o.X && pos.Y == o.Y && o.HasTags("enemy") {
 				Space.Remove(o)
+
+				for i, e := range Enemies {
+					if e.Obj.X == pos.X && e.Obj.Y == pos.Y {
+						removeEnemy(Enemies, i)
+					}
+				}
 			}
 		}
-		Enemies = make([]Enemy, 0)
 
 		Lives -= 1
 	}
