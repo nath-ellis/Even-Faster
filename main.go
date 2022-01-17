@@ -218,7 +218,7 @@ func move() {
 
 		Exploding = true
 
-		pos := c.Objects[0] // TODO FIX ERROR
+		pos := c.Objects[0]
 		objs := Space.Objects()
 		tmp := []Enemy{}
 		for _, o := range objs {
