@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	_ "image/png"
-	"log"
 	"math/rand"
 	"time"
 
@@ -628,7 +627,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	if Exploding {
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(player.Obj.X-26, player.Obj.Y-15)
+		op.GeoM.Scale(1.2, 1.2)
+		op.GeoM.Translate(player.Obj.X-35, player.Obj.Y-15)
 		if ETicker < 24 {
 			screen.DrawImage(Explosion[ETicker], op)
 			ETicker++
@@ -648,6 +648,8 @@ func main() {
 	ebiten.SetWindowTitle("Even Faster")
 
 	if err := ebiten.RunGame(&Game{}); err != nil {
-		log.Fatal("Failed to Run: ", err)
+		err = nil
 	}
 }
+
+// ADD COINS / STORE
