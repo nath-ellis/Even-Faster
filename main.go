@@ -26,8 +26,9 @@ type Player struct {
 }
 
 type Enemy struct {
-	Obj  *resolv.Object
-	Type string
+	Obj   *resolv.Object
+	Type  string
+	Speed int
 }
 
 var (
@@ -62,6 +63,10 @@ var (
 	Seven       *ebiten.Image
 	Eight       *ebiten.Image
 	Nine        *ebiten.Image
+	Speed       int = 2
+	EnemySpeed  int = 8
+	SpawnRate   int = 3
+	SpeedTicks  int = 1
 )
 
 func init() {
@@ -162,8 +167,8 @@ func drawRoad(screen *ebiten.Image) {
 }
 
 func updateRoad() {
-	RoadY1 += 1
-	RoadY2 += 1
+	RoadY1 += Speed
+	RoadY2 += Speed
 
 	_, roadheight := Road.Size()
 
@@ -272,15 +277,17 @@ func updatePlayer() {
 }
 
 func newEnemy() {
-	lane := rand.Intn(4)
+	lane1 := rand.Intn(4)
+	lane2 := rand.Intn(4)
+	lane3 := rand.Intn(4)
 
 	var x int
 
-	if lane == 0 {
+	if lane1 == 0 {
 		x = 155
-	} else if lane == 1 {
+	} else if lane1 == 1 {
 		x = 209
-	} else if lane == 2 {
+	} else if lane1 == 2 {
 		x = 263
 	} else {
 		x = 317
@@ -299,13 +306,105 @@ func newEnemy() {
 		typ = "default-white"
 	}
 
-	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 40, 70, "enemy"), typ})
+	Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 40, 70, "enemy"), typ, speed()})
+
+	if Ticks >= 400 {
+		var x int
+
+		if lane2 == 0 {
+			x = 155
+		} else if lane2 == 1 {
+			x = 209
+		} else if lane2 == 2 {
+			x = 263
+		} else {
+			x = 317
+		}
+
+		ran := rand.Intn(4)
+		var typ string
+
+		if ran == 0 {
+			typ = "default-green"
+		} else if ran == 1 {
+			typ = "default-black"
+		} else if ran == 2 {
+			typ = "default-purple"
+		} else if ran == 3 {
+			typ = "default-white"
+		}
+
+		if lane2 != lane1 {
+			Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 40, 70, "enemy"), typ, speed()})
+		}
+	}
+
+	if Ticks >= 800 {
+		var x int
+
+		if lane3 == 0 {
+			x = 155
+		} else if lane3 == 1 {
+			x = 209
+		} else if lane3 == 2 {
+			x = 263
+		} else {
+			x = 317
+		}
+
+		ran := rand.Intn(4)
+		var typ string
+
+		if ran == 0 {
+			typ = "default-green"
+		} else if ran == 1 {
+			typ = "default-black"
+		} else if ran == 2 {
+			typ = "default-purple"
+		} else if ran == 3 {
+			typ = "default-white"
+		}
+
+		if lane2 != lane3 && lane1 != lane3 {
+			Enemies = append(Enemies, Enemy{resolv.NewObject(float64(x), -100, 40, 70, "enemy"), typ, speed()})
+		}
+	}
 }
 
 func moveEnemies() {
 	for _, e := range Enemies {
 		Space.Add(e.Obj)
-		e.Obj.Y += 2
+		e.Obj.Y += float64(e.Speed)
+
+		if c := e.Obj.Check(0, 0, "enemy"); c != nil {
+			pos := c.Objects[0]
+			objs := Space.Objects()
+			tmp := []Enemy{}
+			for _, o := range objs {
+				if pos.X == o.X && pos.Y == o.Y && o.HasTags("enemy") {
+					Space.Remove(o)
+
+					for _, E := range Enemies {
+						if E.Obj.X == pos.X && E.Obj.Y == pos.Y {
+							continue
+						}
+
+						if e.Obj.X == E.Obj.X && e.Obj.Y == E.Obj.Y {
+							continue
+						}
+
+						tmp = append(tmp, E)
+					}
+				}
+			}
+
+			Space.Remove(e.Obj)
+
+			Enemies = []Enemy{}
+
+			Enemies = tmp
+		}
+
 		e.Obj.Update()
 	}
 }
@@ -324,6 +423,42 @@ func drawEnemies(screen *ebiten.Image) {
 		} else if e.Type == "default-white" {
 			screen.DrawImage(EnemyCar4, op)
 		}
+	}
+}
+
+func speed() int {
+	S := rand.Intn(EnemySpeed)
+
+	if S == 0 {
+		S += 1
+	}
+
+	if S <= Speed {
+		S += Speed
+	}
+
+	return S
+}
+
+func updateSpeed() {
+	SpeedTicks += 1
+
+	if (SpeedTicks / 60) == 20 {
+		EnemySpeed = 9
+	} else if (SpeedTicks / 60) == 40 {
+		EnemySpeed = 10
+		SpawnRate = 2
+	} else if (SpeedTicks / 60) == 60 {
+		EnemySpeed = 11
+		Speed = 3
+	} else if (SpeedTicks / 60) == 80 {
+		EnemySpeed = 12
+		SpawnRate = 1
+	} else if (SpeedTicks / 60) == 100 {
+		EnemySpeed = 13
+	} else if (SpeedTicks / 60) == 120 {
+		EnemySpeed = 14
+		Speed = 4
 	}
 }
 
@@ -350,15 +485,24 @@ func (g *Game) Update() error {
 		move()
 		updatePlayer()
 
-		if (EnemyTimer / 60) == 3 {
+		if (EnemyTimer / 60) == SpawnRate {
 			newEnemy()
 			EnemyTimer = 0
 		}
 
 		moveEnemies()
+
+		updateSpeed()
 	case "gameOver":
 		Ticks = 0
 		EnemyTimer = 0
+
+		Speed = 2
+		EnemySpeed = 8
+		SpawnRate = 3
+		SpeedTicks = 1
+
+		Score = 0
 
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			objs := Space.Objects()
