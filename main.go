@@ -462,6 +462,42 @@ func updateSpeed() {
 	}
 }
 
+func drawScore(screen *ebiten.Image) {
+	for i, s := range fmt.Sprint(Score) {
+		if i >= len(fmt.Sprint(Score))-1 {
+			break
+		}
+
+		op := &ebiten.DrawImageOptions{}
+
+		op.GeoM.Scale(0.5, 0.5)
+		op.GeoM.Translate(float64((25*i)+5), 5)
+
+		switch string(s) {
+		case "0":
+			screen.DrawImage(Zero, op)
+		case "1":
+			screen.DrawImage(One, op)
+		case "2":
+			screen.DrawImage(Two, op)
+		case "3":
+			screen.DrawImage(Three, op)
+		case "4":
+			screen.DrawImage(Four, op)
+		case "5":
+			screen.DrawImage(Five, op)
+		case "6":
+			screen.DrawImage(Six, op)
+		case "7":
+			screen.DrawImage(Seven, op)
+		case "8":
+			screen.DrawImage(Eight, op)
+		case "9":
+			screen.DrawImage(Nine, op)
+		}
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -551,39 +587,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		drawPlayer(screen)
 
-		for i, s := range fmt.Sprint(Score) {
-			if i >= len(fmt.Sprint(Score))-1 {
-				break
-			}
-
-			op := &ebiten.DrawImageOptions{}
-
-			op.GeoM.Scale(0.5, 0.5)
-			op.GeoM.Translate(float64((25*i)+5), 5)
-
-			switch string(s) {
-			case "0":
-				screen.DrawImage(Zero, op)
-			case "1":
-				screen.DrawImage(One, op)
-			case "2":
-				screen.DrawImage(Two, op)
-			case "3":
-				screen.DrawImage(Three, op)
-			case "4":
-				screen.DrawImage(Four, op)
-			case "5":
-				screen.DrawImage(Five, op)
-			case "6":
-				screen.DrawImage(Six, op)
-			case "7":
-				screen.DrawImage(Seven, op)
-			case "8":
-				screen.DrawImage(Eight, op)
-			case "9":
-				screen.DrawImage(Nine, op)
-			}
-		}
+		drawScore(screen)
 	case "gameOver":
 		drawRoad(screen)
 
