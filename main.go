@@ -67,6 +67,8 @@ var (
 	EnemySpeed  int = 8
 	SpawnRate   int = 3
 	SpeedTicks  int = 1
+	Logo        *ebiten.Image
+	LeftClick   *ebiten.Image
 )
 
 func init() {
@@ -154,6 +156,9 @@ func init() {
 	Seven, _, _ = ebitenutil.NewImageFromFile("assets/letters/7.png")
 	Eight, _, _ = ebitenutil.NewImageFromFile("assets/letters/8.png")
 	Nine, _, _ = ebitenutil.NewImageFromFile("assets/letters/9.png")
+
+	Logo, _, _ = ebitenutil.NewImageFromFile("assets/logo.png")
+	LeftClick, _, _ = ebitenutil.NewImageFromFile("assets/left-click.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -564,6 +569,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	switch State {
 	case "menu":
 		drawRoad(screen)
+
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(98, 100)
+		screen.DrawImage(Logo, op)
+
+		op.GeoM.Reset()
+		op.GeoM.Scale(4, 4)
+		op.GeoM.Translate(225, 400)
+		screen.DrawImage(LeftClick, op)
 	case "game":
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(5, 43)

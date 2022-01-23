@@ -32,3 +32,8 @@ Title: Chunky Pixel Art Car Assets
 Author: Games in Bits
 URL: https://games-in-bits.itch.io/chunky-pixel-art-car-assets
 License: 
+
+Title: Input Prompts
+Author: Kenney
+URL: https://kenney.nl/assets/input-prompts-pixel-16
+License: https://creativecommons.org/publicdomain/zero/1.0/
