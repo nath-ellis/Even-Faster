@@ -223,15 +223,14 @@ func drawPlayer(screen *ebiten.Image) {
 }
 
 func move() {
-	// Using ebiten instead of inpututil because movement is better
 	if (ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)) && player.MoveCool <= 0 && player.Obj.X < 317 {
 		player.Obj.X += 54
-		player.MoveCool += 20
+		player.MoveCool += 15
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA)) && player.MoveCool <= 0 && player.Obj.X > 155 {
 		player.Obj.X -= 54
-		player.MoveCool += 20
+		player.MoveCool += 15
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW)) && player.Obj.Y > 0 {
@@ -710,5 +709,3 @@ func main() {
 		err = nil
 	}
 }
-
-// ADD COINS / STORE
