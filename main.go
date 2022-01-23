@@ -69,6 +69,7 @@ var (
 	SpeedTicks  int = 1
 	Logo        *ebiten.Image
 	LeftClick   *ebiten.Image
+	GameOver    *ebiten.Image
 )
 
 func init() {
@@ -159,6 +160,8 @@ func init() {
 
 	Logo, _, _ = ebitenutil.NewImageFromFile("assets/logo.png")
 	LeftClick, _, _ = ebitenutil.NewImageFromFile("assets/left-click.png")
+
+	GameOver, _, _ = ebitenutil.NewImageFromFile("assets/game-over.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -545,6 +548,8 @@ func (g *Game) Update() error {
 
 		Score = 0
 
+		updatePlayer()
+
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			objs := Space.Objects()
 			for _, o := range objs {
@@ -553,6 +558,8 @@ func (g *Game) Update() error {
 				}
 			}
 			Enemies = make([]Enemy, 0)
+
+			player.Obj.Y = 400
 
 			Lives = 3
 
@@ -608,6 +615,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawEnemies(screen)
 
 		drawPlayer(screen)
+
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(142, 100)
+		screen.DrawImage(GameOver, op)
+
+		op.GeoM.Reset()
+		op.GeoM.Scale(4, 4)
+		op.GeoM.Translate(225, 400)
+		screen.DrawImage(LeftClick, op)
 	}
 
 	if Exploding {
