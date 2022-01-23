@@ -31,44 +31,53 @@ type Enemy struct {
 }
 
 var (
-	State       string = "menu"
-	Road        *ebiten.Image
-	RoadY1      int = 0
-	RoadY2      int = 0
-	Space       *resolv.Space
-	player      Player
-	EnemyCar1   *ebiten.Image
-	EnemyCar2   *ebiten.Image
-	EnemyCar3   *ebiten.Image
-	EnemyCar4   *ebiten.Image
-	Enemies     []Enemy
-	Ticks       int = 0
-	EnemyTimer  int = 0
-	BG          *ebiten.Image
-	Explosion   []*ebiten.Image
-	Exploding   bool = false
-	ETicker     int  = 0
-	AudioPlayer *audio.Player
-	Lives       int = 3
-	LifeImg     *ebiten.Image
-	Score       int = 0
-	Zero        *ebiten.Image
-	One         *ebiten.Image
-	Two         *ebiten.Image
-	Three       *ebiten.Image
-	Four        *ebiten.Image
-	Five        *ebiten.Image
-	Six         *ebiten.Image
-	Seven       *ebiten.Image
-	Eight       *ebiten.Image
-	Nine        *ebiten.Image
-	Speed       int = 2
-	EnemySpeed  int = 8
-	SpawnRate   int = 3
-	SpeedTicks  int = 1
-	Logo        *ebiten.Image
-	LeftClick   *ebiten.Image
-	GameOver    *ebiten.Image
+	State        string = "menu"
+	Road         *ebiten.Image
+	RoadY1       int = 0
+	RoadY2       int = 0
+	Space        *resolv.Space
+	player       Player
+	EnemyCar1    *ebiten.Image
+	EnemyCar2    *ebiten.Image
+	EnemyCar3    *ebiten.Image
+	EnemyCar4    *ebiten.Image
+	Enemies      []Enemy
+	Ticks        int = 0
+	EnemyTimer   int = 0
+	BG           *ebiten.Image
+	Explosion    []*ebiten.Image
+	Exploding    bool = false
+	ETicker      int  = 0
+	AudioPlayer  *audio.Player
+	Lives        int = 3
+	LifeImg      *ebiten.Image
+	Score        int = 0
+	Zero         *ebiten.Image
+	One          *ebiten.Image
+	Two          *ebiten.Image
+	Three        *ebiten.Image
+	Four         *ebiten.Image
+	Five         *ebiten.Image
+	Six          *ebiten.Image
+	Seven        *ebiten.Image
+	Eight        *ebiten.Image
+	Nine         *ebiten.Image
+	Speed        int = 2
+	EnemySpeed   int = 8
+	SpawnRate    int = 3
+	SpeedTicks   int = 1
+	Logo         *ebiten.Image
+	LeftClick    *ebiten.Image
+	GameOver     *ebiten.Image
+	W1           *ebiten.Image
+	W2           *ebiten.Image
+	A1           *ebiten.Image
+	A2           *ebiten.Image
+	S1           *ebiten.Image
+	S2           *ebiten.Image
+	D1           *ebiten.Image
+	D2           *ebiten.Image
+	SeenControls bool = false
 )
 
 func init() {
@@ -161,6 +170,15 @@ func init() {
 	LeftClick, _, _ = ebitenutil.NewImageFromFile("assets/left-click.png")
 
 	GameOver, _, _ = ebitenutil.NewImageFromFile("assets/game-over.png")
+
+	W1, _, _ = ebitenutil.NewImageFromFile("assets/W1.png")
+	W2, _, _ = ebitenutil.NewImageFromFile("assets/W2.png")
+	A1, _, _ = ebitenutil.NewImageFromFile("assets/A1.png")
+	A2, _, _ = ebitenutil.NewImageFromFile("assets/A2.png")
+	S1, _, _ = ebitenutil.NewImageFromFile("assets/S1.png")
+	S2, _, _ = ebitenutil.NewImageFromFile("assets/S2.png")
+	D1, _, _ = ebitenutil.NewImageFromFile("assets/D1.png")
+	D2, _, _ = ebitenutil.NewImageFromFile("assets/D2.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -505,6 +523,39 @@ func drawScore(screen *ebiten.Image) {
 	}
 }
 
+func drawInputPrompts(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(2, 2)
+
+	op.GeoM.Translate(35, 535)
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
+		screen.DrawImage(W1, op)
+	} else {
+		screen.DrawImage(W2, op)
+	}
+
+	op.GeoM.Translate(-30, 30)
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
+		screen.DrawImage(A1, op)
+	} else {
+		screen.DrawImage(A2, op)
+	}
+
+	op.GeoM.Translate(30, 0)
+	if ebiten.IsKeyPressed(ebiten.KeyS) {
+		screen.DrawImage(S1, op)
+	} else {
+		screen.DrawImage(S2, op)
+	}
+
+	op.GeoM.Translate(30, 0)
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
+		screen.DrawImage(D1, op)
+	} else {
+		screen.DrawImage(D2, op)
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -608,6 +659,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawPlayer(screen)
 
 		drawScore(screen)
+
+		if !SeenControls {
+			drawInputPrompts(screen)
+
+			if (Ticks / 60) >= 10 {
+				SeenControls = true
+			}
+		}
 	case "gameOver":
 		drawRoad(screen)
 
