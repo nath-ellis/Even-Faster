@@ -217,11 +217,11 @@ func move() {
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW)) && player.Obj.Y > 0 {
-		player.Obj.Y -= 1
+		player.Obj.Y -= 3
 	}
 
 	if (ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS)) && player.Obj.Y < 533 {
-		player.Obj.Y += 1
+		player.Obj.Y += 3
 	}
 
 	if c := player.Obj.Check(0, 0, "enemy"); c != nil {
