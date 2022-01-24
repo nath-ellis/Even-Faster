@@ -80,6 +80,8 @@ var (
 	D2           *ebiten.Image
 	SeenControls bool = false
 	MenuMusic    *audio.Player
+	GameMusic    []*audio.Player
+	CurrentTrack int = 0
 )
 
 func init() {
@@ -154,6 +156,7 @@ func init() {
 	f, _ := ebitenutil.OpenFile("assets/explosion.mp3")
 	d, _ := mp3.DecodeWithSampleRate(48000, f)
 	ExplosionSFX, _ = ctx.NewPlayer(d)
+	ExplosionSFX.SetVolume(ExplosionSFX.Volume() + 2)
 
 	LifeImg, _, _ = ebitenutil.NewImageFromFile("assets/lives.png")
 
@@ -185,6 +188,39 @@ func init() {
 	f, _ = ebitenutil.OpenFile("assets/music/franticpanic.wav")
 	s, _ := wav.DecodeWithSampleRate(48000, f)
 	MenuMusic, _ = ctx.NewPlayer(s)
+
+	f, _ = ebitenutil.OpenFile("assets/music/cave-disco.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track1, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track1)
+	f, _ = ebitenutil.OpenFile("assets/music/cavejam.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track2, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track2)
+	f, _ = ebitenutil.OpenFile("assets/music/climber.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track3, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track3)
+	f, _ = ebitenutil.OpenFile("assets/music/crusher.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track4, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track4)
+	f, _ = ebitenutil.OpenFile("assets/music/cursed-world.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track5, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track5)
+	f, _ = ebitenutil.OpenFile("assets/music/dark-woods.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track6, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track6)
+	f, _ = ebitenutil.OpenFile("assets/music/mystery-mountain.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track7, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track7)
+	f, _ = ebitenutil.OpenFile("assets/music/splash-crashers.wav")
+	s, _ = wav.DecodeWithSampleRate(48000, f)
+	Track8, _ := ctx.NewPlayer(s)
+	GameMusic = append(GameMusic, Track8)
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -561,6 +597,27 @@ func drawInputPrompts(screen *ebiten.Image) {
 	}
 }
 
+func gameMusic() {
+	playing := false
+
+	for _, g := range GameMusic {
+		if g.IsPlaying() {
+			playing = true
+		}
+	}
+
+	if !playing {
+		GameMusic[CurrentTrack].Rewind()
+		GameMusic[CurrentTrack].Play()
+
+		CurrentTrack += 1
+	}
+
+	if CurrentTrack == (len(GameMusic) - 1) {
+		CurrentTrack = 0
+	}
+}
+
 type Game struct{}
 
 func (g *Game) Update() error {
@@ -591,6 +648,8 @@ func (g *Game) Update() error {
 		move()
 		updatePlayer()
 
+		gameMusic()
+
 		if (EnemyTimer / 60) == SpawnRate {
 			newEnemy()
 			EnemyTimer = 0
@@ -599,6 +658,12 @@ func (g *Game) Update() error {
 		moveEnemies()
 		updateSpeed()
 	case "gameOver":
+		for _, g := range GameMusic {
+			if g.IsPlaying() {
+				g.Pause()
+			}
+		}
+
 		Ticks = 0
 		EnemyTimer = 0
 
