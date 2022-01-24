@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/solarlune/resolv"
 )
@@ -78,6 +79,7 @@ var (
 	D1           *ebiten.Image
 	D2           *ebiten.Image
 	SeenControls bool = false
+	MenuMusic    *audio.Player
 )
 
 func init() {
@@ -179,6 +181,10 @@ func init() {
 	S2, _, _ = ebitenutil.NewImageFromFile("assets/S2.png")
 	D1, _, _ = ebitenutil.NewImageFromFile("assets/D1.png")
 	D2, _, _ = ebitenutil.NewImageFromFile("assets/D2.png")
+
+	f, _ = ebitenutil.OpenFile("assets/music/franticpanic.wav")
+	s, _ := wav.DecodeWithSampleRate(48000, f)
+	MenuMusic, _ = ctx.NewPlayer(s)
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -560,6 +566,11 @@ type Game struct{}
 func (g *Game) Update() error {
 	switch State {
 	case "menu":
+		if !MenuMusic.IsPlaying() {
+			MenuMusic.Rewind()
+			MenuMusic.Play()
+		}
+
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			State = "game"
 		}
