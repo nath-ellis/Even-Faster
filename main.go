@@ -49,7 +49,7 @@ var (
 	Explosion    []*ebiten.Image
 	Exploding    bool = false
 	ETicker      int  = 0
-	AudioPlayer  *audio.Player
+	ExplosionSFX *audio.Player
 	Lives        int = 3
 	LifeImg      *ebiten.Image
 	Score        int = 0
@@ -153,7 +153,7 @@ func init() {
 	ctx := audio.NewContext(48000)
 	f, _ := ebitenutil.OpenFile("assets/explosion.mp3")
 	d, _ := mp3.DecodeWithSampleRate(48000, f)
-	AudioPlayer, _ = ctx.NewPlayer(d)
+	ExplosionSFX, _ = ctx.NewPlayer(d)
 
 	LifeImg, _, _ = ebitenutil.NewImageFromFile("assets/lives.png")
 
@@ -248,8 +248,8 @@ func move() {
 	}
 
 	if c := player.Obj.Check(0, 0, "enemy"); c != nil {
-		AudioPlayer.Rewind()
-		AudioPlayer.Play()
+		ExplosionSFX.Rewind()
+		ExplosionSFX.Play()
 
 		Exploding = true
 
