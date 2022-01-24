@@ -573,6 +573,8 @@ func (g *Game) Update() error {
 
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			State = "game"
+			MenuMusic.Pause()
+			MenuMusic.Close()
 		}
 	case "game":
 		if Lives <= 0 {
