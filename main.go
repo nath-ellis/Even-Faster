@@ -198,10 +198,10 @@ func updateRoad() {
 	_, roadheight := Road.Size()
 
 	if RoadY1 >= 600 {
-		RoadY1 = -roadheight
+		RoadY1 = (roadheight - Speed*3) * -1
 	}
 	if RoadY2 >= 600 {
-		RoadY2 = -roadheight
+		RoadY2 = (roadheight - Speed*3) * -1
 	}
 }
 
@@ -584,7 +584,6 @@ func (g *Game) Update() error {
 		}
 
 		moveEnemies()
-
 		updateSpeed()
 	case "gameOver":
 		Ticks = 0
@@ -652,11 +651,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 
 		drawRoad(screen)
-
 		drawEnemies(screen)
-
 		drawPlayer(screen)
-
 		drawScore(screen)
 
 		if !SeenControls {
@@ -668,9 +664,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	case "gameOver":
 		drawRoad(screen)
-
 		drawEnemies(screen)
-
 		drawPlayer(screen)
 
 		op := &ebiten.DrawImageOptions{}
