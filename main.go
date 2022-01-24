@@ -84,6 +84,10 @@ var (
 	CurrentTrack int  = 0
 	MutedMusic   bool = false
 	MuteCool     int  = 0
+	F1_1         *ebiten.Image
+	F1_2         *ebiten.Image
+	F2_1         *ebiten.Image
+	F2_2         *ebiten.Image
 )
 
 func init() {
@@ -223,6 +227,11 @@ func init() {
 	s, _ = wav.DecodeWithSampleRate(48000, f)
 	Track8, _ := ctx.NewPlayer(s)
 	GameMusic = append(GameMusic, Track8)
+
+	F1_1, _, _ = ebitenutil.NewImageFromFile("assets/F1-1.png")
+	F1_2, _, _ = ebitenutil.NewImageFromFile("assets/F1-2.png")
+	F2_1, _, _ = ebitenutil.NewImageFromFile("assets/F2-1.png")
+	F2_2, _, _ = ebitenutil.NewImageFromFile("assets/F2-2.png")
 }
 
 func drawRoad(screen *ebiten.Image) {
@@ -610,6 +619,20 @@ func drawInputPrompts(screen *ebiten.Image) {
 		screen.DrawImage(D1, op)
 	} else {
 		screen.DrawImage(D2, op)
+	}
+
+	op.GeoM.Translate(400, -30)
+	if ebiten.IsKeyPressed(ebiten.KeyF1) {
+		screen.DrawImage(F1_1, op)
+	} else {
+		screen.DrawImage(F1_2, op)
+	}
+
+	op.GeoM.Translate(0, 30)
+	if ebiten.IsKeyPressed(ebiten.KeyF2) {
+		screen.DrawImage(F2_1, op)
+	} else {
+		screen.DrawImage(F2_2, op)
 	}
 }
 
