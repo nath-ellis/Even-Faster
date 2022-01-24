@@ -81,7 +81,9 @@ var (
 	SeenControls bool = false
 	MenuMusic    *audio.Player
 	GameMusic    []*audio.Player
-	CurrentTrack int = 0
+	CurrentTrack int  = 0
+	MutedMusic   bool = false
+	MuteCool     int  = 0
 )
 
 func init() {
@@ -317,7 +319,7 @@ func move() {
 }
 
 func updatePlayer() {
-	if ebiten.IsKeyPressed(ebiten.KeyZ) && player.SirenCool <= 0 {
+	if ebiten.IsKeyPressed(ebiten.KeyF1) && player.SirenCool <= 0 {
 		if player.SirenOn {
 			player.SirenOn = false
 		} else {
@@ -325,6 +327,20 @@ func updatePlayer() {
 		}
 
 		player.SirenCool += 10
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyF2) && MuteCool <= 0 {
+		if MutedMusic {
+			MutedMusic = false
+		} else {
+			MutedMusic = true
+		}
+
+		MuteCool = 10
+	} else {
+		if MuteCool != 0 {
+			MuteCool -= 1
+		}
 	}
 
 	if player.MoveCool > 0 {
@@ -648,7 +664,15 @@ func (g *Game) Update() error {
 		move()
 		updatePlayer()
 
-		gameMusic()
+		if !MutedMusic {
+			gameMusic()
+		} else {
+			for _, g := range GameMusic {
+				if g.IsPlaying() {
+					g.Pause()
+				}
+			}
+		}
 
 		if (EnemyTimer / 60) == SpawnRate {
 			newEnemy()
