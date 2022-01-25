@@ -667,7 +667,25 @@ func (g *Game) Update() error {
 			MenuMusic.Play()
 		}
 
+		EnemyTimer += 1
+
+		if (EnemyTimer / 60) == SpawnRate {
+			newEnemy()
+			EnemyTimer = 0
+		}
+		moveEnemies()
+
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+			EnemyTimer = 0
+
+			objs := Space.Objects()
+			for _, o := range objs {
+				if o.HasTags("enemy") {
+					Space.Remove(o)
+				}
+			}
+			Enemies = make([]Enemy, 0)
+
 			State = "game"
 			MenuMusic.Pause()
 			MenuMusic.Close()
@@ -749,6 +767,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	switch State {
 	case "menu":
 		drawRoad(screen)
+
+		drawEnemies(screen)
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(98, 100)
