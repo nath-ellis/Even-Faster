@@ -7,38 +7,38 @@ import (
 )
 
 var (
-	Road   *ebiten.Image
-	RoadY1 int = 0
-	RoadY2 int = 0
+	road   *ebiten.Image
+	roadY1 int = 0
+	roadY2 int = 0
 )
 
 func InitRoad() {
-	Road, _, _ = ebitenutil.NewImageFromFile("assets/road.png")
+	road, _, _ = ebitenutil.NewImageFromFile("assets/road.png")
 
-	_, RoadY2 = Road.Size()
-	RoadY2 = RoadY2 * -1
+	_, roadY2 = road.Size()
+	roadY2 = roadY2 * -1
 }
 
 func DrawRoad(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(120, float64(RoadY1))
-	screen.DrawImage(Road, op)
+	op.GeoM.Translate(120, float64(roadY1))
+	screen.DrawImage(road, op)
 
 	op.GeoM.Reset()
-	op.GeoM.Translate(120, float64(RoadY2))
-	screen.DrawImage(Road, op)
+	op.GeoM.Translate(120, float64(roadY2))
+	screen.DrawImage(road, op)
 }
 
 func UpdateRoad() {
-	RoadY1 += player.Player.GameSpeed
-	RoadY2 += player.Player.GameSpeed
+	roadY1 += player.Player.GameSpeed
+	roadY2 += player.Player.GameSpeed
 
-	_, roadheight := Road.Size()
+	_, roadheight := road.Size()
 
-	if RoadY1 >= 600 {
-		RoadY1 = (roadheight - player.Player.GameSpeed*3) * -1
+	if roadY1 >= 600 {
+		roadY1 = (roadheight - player.Player.GameSpeed*3) * -1
 	}
-	if RoadY2 >= 600 {
-		RoadY2 = (roadheight - player.Player.GameSpeed*3) * -1
+	if roadY2 >= 600 {
+		roadY2 = (roadheight - player.Player.GameSpeed*3) * -1
 	}
 }
