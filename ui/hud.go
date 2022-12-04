@@ -82,37 +82,46 @@ func DrawInputPrompts(screen *ebiten.Image) {
 }
 
 func DrawScore(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(0.5, 0.5)
+	op.GeoM.Translate(5, 5)
+
 	for i, s := range fmt.Sprint(player.Player.Score) {
 		if i >= len(fmt.Sprint(player.Player.Score))-1 {
 			break
 		}
 
-		op := &ebiten.DrawImageOptions{}
-
-		op.GeoM.Scale(0.5, 0.5)
-		op.GeoM.Translate(float64((25*i)+5), 5)
-
 		switch string(s) {
 		case "0":
 			screen.DrawImage(zero, op)
+			op.GeoM.Translate(28, 0)
 		case "1":
 			screen.DrawImage(one, op)
+			op.GeoM.Translate(16, 0)
 		case "2":
 			screen.DrawImage(two, op)
+			op.GeoM.Translate(28, 0)
 		case "3":
 			screen.DrawImage(three, op)
+			op.GeoM.Translate(28, 0)
 		case "4":
 			screen.DrawImage(four, op)
+			op.GeoM.Translate(28, 0)
 		case "5":
 			screen.DrawImage(five, op)
+			op.GeoM.Translate(28, 0)
 		case "6":
 			screen.DrawImage(six, op)
+			op.GeoM.Translate(28, 0)
 		case "7":
 			screen.DrawImage(seven, op)
+			op.GeoM.Translate(28, 0)
 		case "8":
 			screen.DrawImage(eight, op)
+			op.GeoM.Translate(28, 0)
 		case "9":
 			screen.DrawImage(nine, op)
+			op.GeoM.Translate(28, 0)
 		}
 	}
 }
