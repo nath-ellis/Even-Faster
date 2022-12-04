@@ -8,13 +8,13 @@ func Draw(screen *ebiten.Image) {
 		op.GeoM.Translate(e.Obj.X, e.Obj.Y)
 
 		if e.Type == "default-green" {
-			screen.DrawImage(EnemyCar1, op)
+			screen.DrawImage(enemyCar1, op)
 		} else if e.Type == "default-black" {
-			screen.DrawImage(EnemyCar2, op)
+			screen.DrawImage(enemyCar2, op)
 		} else if e.Type == "default-purple" {
-			screen.DrawImage(EnemyCar3, op)
+			screen.DrawImage(enemyCar3, op)
 		} else if e.Type == "default-white" {
-			screen.DrawImage(EnemyCar4, op)
+			screen.DrawImage(enemyCar4, op)
 		}
 	}
 }

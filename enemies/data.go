@@ -14,10 +14,10 @@ type Data struct {
 
 var (
 	Enemies    []Data
-	EnemyCar1  *ebiten.Image
-	EnemyCar2  *ebiten.Image
-	EnemyCar3  *ebiten.Image
-	EnemyCar4  *ebiten.Image
+	enemyCar1  *ebiten.Image
+	enemyCar2  *ebiten.Image
+	enemyCar3  *ebiten.Image
+	enemyCar4  *ebiten.Image
 	EnemySpeed int = 8
 	EnemyTimer int = 0
 	SpawnRate  int = 3
@@ -25,8 +25,8 @@ var (
 )
 
 func Init() {
-	EnemyCar1, _, _ = ebitenutil.NewImageFromFile("assets/enemy1.png")
-	EnemyCar2, _, _ = ebitenutil.NewImageFromFile("assets/enemy2.png")
-	EnemyCar3, _, _ = ebitenutil.NewImageFromFile("assets/enemy3.png")
-	EnemyCar4, _, _ = ebitenutil.NewImageFromFile("assets/enemy4.png")
+	enemyCar1, _, _ = ebitenutil.NewImageFromFile("assets/enemy1.png")
+	enemyCar2, _, _ = ebitenutil.NewImageFromFile("assets/enemy2.png")
+	enemyCar3, _, _ = ebitenutil.NewImageFromFile("assets/enemy3.png")
+	enemyCar4, _, _ = ebitenutil.NewImageFromFile("assets/enemy4.png")
 }
