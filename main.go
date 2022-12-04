@@ -15,13 +15,9 @@ import (
 )
 
 var (
-	State        string = "menu"
-	Space        *resolv.Space
-	BG           *ebiten.Image
-	Logo         *ebiten.Image
-	LeftClick    *ebiten.Image
-	GameOver     *ebiten.Image
-	SeenControls bool = false
+	State string = "menu"
+	Space *resolv.Space
+	BG    *ebiten.Image
 )
 
 func init() {
@@ -32,15 +28,9 @@ func init() {
 	player.Init(Space)
 	enemies.Init()
 	ui.InitRoad()
-
 	music.Init()
 
 	BG, _, _ = ebitenutil.NewImageFromFile("assets/bg.png")
-
-	Logo, _, _ = ebitenutil.NewImageFromFile("assets/logo.png")
-	LeftClick, _, _ = ebitenutil.NewImageFromFile("assets/left-click.png")
-
-	GameOver, _, _ = ebitenutil.NewImageFromFile("assets/game-over.png")
 }
 
 type Game struct{}
@@ -54,12 +44,10 @@ func (g *Game) Update() error {
 		enemies.Update(Space)
 
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-
 			enemies.RemoveAll(Space)
+			music.EndMenuMusic()
 
 			State = "game"
-
-			music.EndMenuMusic()
 		}
 	case "game":
 		if player.Player.Lives <= 0 {
@@ -97,16 +85,9 @@ func (g *Game) Update() error {
 		player.Update()
 
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			objs := Space.Objects()
-			for _, o := range objs {
-				if o.HasTags("enemy") {
-					Space.Remove(o)
-				}
-			}
-			enemies.Enemies = make([]enemies.Data, 0)
+			enemies.RemoveAll(Space)
 
 			player.Player.Obj.Y = 400
-
 			player.Player.Lives = 3
 
 			State = "game"
@@ -121,45 +102,23 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	switch State {
 	case "menu":
-		ui.DrawRoad(screen)
-
 		enemies.Draw(screen)
 
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(98, 100)
-		screen.DrawImage(Logo, op)
-
-		op.GeoM.Reset()
-		op.GeoM.Scale(4, 4)
-		op.GeoM.Translate(225, 400)
-		screen.DrawImage(LeftClick, op)
+		ui.DrawMenu(screen)
 	case "game":
+		ui.DrawRoad(screen)
+
+		enemies.Draw(screen)
+		player.Draw(screen)
+
 		ui.DrawLives(screen)
-		ui.DrawRoad(screen)
-		enemies.Draw(screen)
-		player.Draw(screen)
 		ui.DrawScore(screen)
-
-		if !SeenControls {
-			ui.DrawInputPrompts(screen)
-
-			if (player.Player.Ticks / 60) >= 10 {
-				SeenControls = true
-			}
-		}
+		ui.DrawInputPrompts(screen)
 	case "gameOver":
-		ui.DrawRoad(screen)
 		enemies.Draw(screen)
 		player.Draw(screen)
 
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(142, 100)
-		screen.DrawImage(GameOver, op)
-
-		op.GeoM.Reset()
-		op.GeoM.Scale(4, 4)
-		op.GeoM.Translate(225, 400)
-		screen.DrawImage(LeftClick, op)
+		ui.DrawGameOver(screen)
 	}
 }
 
