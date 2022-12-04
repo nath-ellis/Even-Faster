@@ -22,11 +22,11 @@ func Draw(screen *ebiten.Image) {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(1.2, 1.2)
 		op.GeoM.Translate(Player.Obj.X-35, Player.Obj.Y-15)
-		if ETicker < 24 {
-			screen.DrawImage(Explosion[ETicker], op)
-			ETicker++
+		if eTicker < 24 {
+			screen.DrawImage(explosion[eTicker], op)
+			eTicker++
 		} else {
-			ETicker = 0
+			eTicker = 0
 			Exploding = false
 		}
 	}

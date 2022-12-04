@@ -23,9 +23,9 @@ type Data struct {
 
 var (
 	Player    Data
-	Explosion []*ebiten.Image
+	explosion []*ebiten.Image
 	Exploding bool = false
-	ETicker   int  = 0
+	eTicker   int  = 0
 )
 
 func Init(Space *resolv.Space) {
@@ -60,28 +60,29 @@ func Init(Space *resolv.Space) {
 	explosion11, _, _ := ebitenutil.NewImageFromFile("assets/explosion11.png")
 	explosion12, _, _ := ebitenutil.NewImageFromFile("assets/explosion12.png")
 
-	Explosion = append(Explosion, explosion1)
-	Explosion = append(Explosion, explosion1)
-	Explosion = append(Explosion, explosion2)
-	Explosion = append(Explosion, explosion2)
-	Explosion = append(Explosion, explosion3)
-	Explosion = append(Explosion, explosion3)
-	Explosion = append(Explosion, explosion4)
-	Explosion = append(Explosion, explosion4)
-	Explosion = append(Explosion, explosion5)
-	Explosion = append(Explosion, explosion5)
-	Explosion = append(Explosion, explosion6)
-	Explosion = append(Explosion, explosion6)
-	Explosion = append(Explosion, explosion7)
-	Explosion = append(Explosion, explosion7)
-	Explosion = append(Explosion, explosion8)
-	Explosion = append(Explosion, explosion8)
-	Explosion = append(Explosion, explosion9)
-	Explosion = append(Explosion, explosion9)
-	Explosion = append(Explosion, explosion10)
-	Explosion = append(Explosion, explosion10)
-	Explosion = append(Explosion, explosion11)
-	Explosion = append(Explosion, explosion11)
-	Explosion = append(Explosion, explosion12)
-	Explosion = append(Explosion, explosion12)
+	// Each frame twice to extend the animation
+	explosion = append(explosion, explosion1)
+	explosion = append(explosion, explosion1)
+	explosion = append(explosion, explosion2)
+	explosion = append(explosion, explosion2)
+	explosion = append(explosion, explosion3)
+	explosion = append(explosion, explosion3)
+	explosion = append(explosion, explosion4)
+	explosion = append(explosion, explosion4)
+	explosion = append(explosion, explosion5)
+	explosion = append(explosion, explosion5)
+	explosion = append(explosion, explosion6)
+	explosion = append(explosion, explosion6)
+	explosion = append(explosion, explosion7)
+	explosion = append(explosion, explosion7)
+	explosion = append(explosion, explosion8)
+	explosion = append(explosion, explosion8)
+	explosion = append(explosion, explosion9)
+	explosion = append(explosion, explosion9)
+	explosion = append(explosion, explosion10)
+	explosion = append(explosion, explosion10)
+	explosion = append(explosion, explosion11)
+	explosion = append(explosion, explosion11)
+	explosion = append(explosion, explosion12)
+	explosion = append(explosion, explosion12)
 }
