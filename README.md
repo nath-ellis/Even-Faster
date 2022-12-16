@@ -1,9 +1,5 @@
 # Even Faster
-Even Faster is the sequel to [God Speed](https://github.com/nath-ellis/God-Speed).
-
-## The game
-It is very similar to [God Speed](https://github.com/nath-ellis/God-Speed) but there are 4 lanes instead of 2, you can move up and down the road and toggle a police siren. \
-There is also more music and a greater difficulty as well as being able to be played in the browser.
+Even Faster is a game about dodging cars driving towards you.
 
 ## Controls
 Up Arrow / W to go up \
